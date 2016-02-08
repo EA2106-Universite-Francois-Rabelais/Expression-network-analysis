@@ -14,28 +14,28 @@ Command line example :
 
 - rankmatrix, all results saved on node 0, doubleprecision
 
-mpirun -np 4 hrr file.dat rankmatrix doubleprecision
+        mpirun -np 4 hrr file.dat rankmatrix doubleprecision
 
 - rankmatrix, all results saved on node 0
 
-mpirun -np 4 hrr file.dat rankmatrix
+        mpirun -np 4 hrr file.dat rankmatrix
 
 - rankmatrix, all results saved on each node
 
-mpirun -np 4 hrr file.dat rankmatrix localsave
+        mpirun -np 4 hrr file.dat rankmatrix localsave
 
 - pcc, all results saved on node 0
 
-mpirun -np 4 hrr file.dat pcc
+        mpirun -np 4 hrr file.dat pcc
 
 - pcc, all results saved on each node
 
-mpirun -np 4 hrr file.dat pcc localsave
+        mpirun -np 4 hrr file.dat pcc localsave
 
 
 
 ##Values
-The program returns np text files (named 0.txt to np.txt) corresponding to concatenated vectors of PCC or HRR values.
+The program returns np text files (named 0.txt to (np-1).txt) corresponding to concatenated vectors of PCC or HRR values.
 
 ##Process .txt files resulting from hrr
 First, create a PCC_lt or HRR_lt directory and use the R script HRR_cut.R as following in the directory containing .txt files (it should contain only those .txt files).
