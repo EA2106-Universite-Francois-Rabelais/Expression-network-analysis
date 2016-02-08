@@ -1,10 +1,13 @@
 # Expression-network-analysis
+This program written in C is designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. The input table should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
 
 ##Installation
 
 Untar and compile with mpich by typing "make" in the directory. Requires cBLAS and Lapack libraries.
 
 ##Usage
+
+
 Command line example :
 
 - rankmatrix, all results saved on node 0, doubleprecision
