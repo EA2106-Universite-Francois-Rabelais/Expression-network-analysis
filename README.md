@@ -1,11 +1,12 @@
 # Expression-network-analysis
-This program written in C is designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. It uses mpich to efficiently parallelize computations.
+This pipeline first uses a program written in C designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. It relies on mpich to efficiently parallelize computations.
+The input table (eg, file.dat) should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
 
-The input table should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
+The resulting vectors are next cut into n files by a simple multithreaded R script.
 
 ##Installation
 
-Untar and compile with mpich by typing "make" in the directory. Requires cBLAS and Lapack libraries.
+Untar 'hrr.tgz' and compile with mpich by typing 'make' in the directory. Requires cBLAS and Lapack libraries.
 
 ##Usage
 
@@ -13,27 +14,61 @@ Command line example :
 
 - rankmatrix, all results saved on node 0, doubleprecision
 
-mpirun -np 4 ./hrr.exe file.dat rankmatrix doubleprecision
+mpirun -np 4 hrr file.dat rankmatrix doubleprecision
 
 - rankmatrix, all results saved on node 0
 
-mpirun -np 4 ./hrr.exe file.dat rankmatrix
+mpirun -np 4 hrr file.dat rankmatrix
 
 - rankmatrix, all results saved on each node
 
-mpirun -np 4 ./hrr.exe file.dat rankmatrix localsave
+mpirun -np 4 hrr file.dat rankmatrix localsave
 
 - pcc, all results saved on node 0
 
-mpirun -np 4 ./hrr.exe file.dat pcc
+mpirun -np 4 hrr file.dat pcc
 
 - pcc, all results saved on each node
 
-mpirun -np 4 ./hrr.exe file.dat pcc localsave
+mpirun -np 4 hrr file.dat pcc localsave
 
-- weightedpcc, all results saved on node 0, default limit 0.4
+
 
 ##Values
 The program returns np text files (named 0.txt to np.txt) corresponding to concatenated vectors of PCC or HRR values.
 
+##Process .txt files resulting from hrr
+First, create a PCC_lt or HRR_lt directory and use the R script HRR_cut.R as following in the directory containing .txt files (it should contain only those .txt files).
 
+Rscript --vanilla HRR_cut.R
+
+        Usage: HRR_cut.R [options]
+        
+        
+          Options:
+          	-n INTEGER, --files=INTEGER
+          		Number of .txt files (equal to number of cpus used in hrr)
+          
+          	-a CHARACTER, --accession=CHARACTER
+          		File containing transcript names
+          
+          	-s INTEGER, --size=INTEGER
+          		Number of rows in the processed matrix (not REAL size), see hrr standard output
+          
+          	-S INTEGER, --realsize=INTEGER
+          		Number of rows in the matrix (REAL size), see hrr standard output
+          
+          	-c INTEGER, --subsize=INTEGER
+          		Number of row in the submatrix, see hrr standard output
+          
+          	-r CHARACTER, --corr=CHARACTER
+          		PCC or HRR
+          
+          	-m INTEGER, --mcores=INTEGER
+          		Number of CPUs to use; relies on 'Parallel' R package
+          
+          	-h, --help
+          		Show this help message and exit
+          
+  
+  
