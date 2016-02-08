@@ -1,5 +1,10 @@
 # Expression-network-analysis
 
+#Installation
+
+Untar and compile with mpich by typing "make" in the directory. Requires cBLAS and Lapack libraries.
+
+#Usage
 Command line example :
 
 - rankmatrix, all results saved on node 0, doubleprecision
