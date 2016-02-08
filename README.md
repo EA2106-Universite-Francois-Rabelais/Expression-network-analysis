@@ -1,12 +1,13 @@
 # Expression-network-analysis
-This program written in C is designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. The input table should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
+This program written in C is designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. It uses mpich to efficiently parallelize computations.
+
+The input table should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
 
 ##Installation
 
 Untar and compile with mpich by typing "make" in the directory. Requires cBLAS and Lapack libraries.
 
 ##Usage
-
 
 Command line example :
 
@@ -31,3 +32,8 @@ mpirun -np 4 ./hrr.exe file.dat pcc
 mpirun -np 4 ./hrr.exe file.dat pcc localsave
 
 - weightedpcc, all results saved on node 0, default limit 0.4
+
+##Values
+The program returns np text files (named 0.txt to np.txt) corresponding to concatenated vectors of PCC or HRR values.
+
+
