@@ -40,7 +40,8 @@ The program returns np text files (named 0.txt to (np-1).txt) corresponding to c
 ##Process .txt files resulting from hrr
 First, create a PCC_lt or HRR_lt directory and use the R script HRR_cut.R as following in the directory containing .txt files (it should contain only those .txt files).
 
-Rscript --vanilla HRR_cut.R
+
+        Rscript --vanilla HRR_cut.R
 
         Usage: HRR_cut.R [options]
         
