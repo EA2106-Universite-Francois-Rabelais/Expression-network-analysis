@@ -2,7 +2,8 @@
 This pipeline first uses a program written in C designed to compute Pearson Correlation Coefficients (PCC) and/or Highest Reciprocal Ranks (HRR) on large transcript expression matrices. It relies on mpich to efficiently parallelize computations.
 The input table (eg, file.dat) should have the format n x p, with n corresponding to transcripts and p to samples. Provide table as a tab-delimited file; store transcript ids in the first column (without header) and sample names in the first row. 
 
-        Be sure that your file.dat is a tab-delimited file. You may run the following Perl one-liner to replace spaces by tabulations:
+        Be sure that your file.dat is a tab-delimited file. 
+        You may run the following Perl one-liner to replace spaces by tabulations:
         perl -pe 's/ /\t/g' file.dat >file.dat.ok
 
 
