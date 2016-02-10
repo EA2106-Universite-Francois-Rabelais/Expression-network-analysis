@@ -73,3 +73,6 @@ First, create a PCC_lt or HRR_lt directory and use the R script HRR_cut.R as fol
           
   
   
+##Example
+
+You may download a full Arabidopsis expression matrix @http://bbv-ea2106.sciences.univ-tours.fr/index.php/web-links/36-transcriptomic-resources and use the pipeline to generate HRR or PCC files.
