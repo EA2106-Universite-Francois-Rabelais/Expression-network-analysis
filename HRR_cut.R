@@ -23,19 +23,22 @@ cpus.ok<-opt$files-1
 acc.files<-paste(0:cpus.ok, ".txt", sep="")
 ids<-scan(opt$accession, what="character")
 to.add<-opt$size-opt$realsize
-annot<-c(acc.files, rep(acc.files[length(acc.files)], to.add))
-paquets.names<-seq(1,nrow(annot), opt$subsize)
+if (length(to.add!=0)) {
+	annot<-c(ids, rep(ids[length(ids)], to.add))} else {
+	annot<-ids}
+
+paquets.names<-seq(1, length(annot), opt$subsize)
 paquets.names<-c(paquets.names, length(annot)+1)
 
 
 mclapply(1:length(acc.files), function(y){
         a<-scan(acc.files[y], what="character")
-        acc.names<-annot[paquets.names[y]:(paquets.names[y+1]-1),2]
-        paquets<-seq(1,length(a), opt$realsize)
+        acc.names<-annot[paquets.names[y]:(paquets.names[y+1]-1)]
+        paquets<-seq(1,length(a), opt$size)
         paquets<-c(paquets, length(a)+1)
         lapply(1:(length(paquets)-1), function(x){
-                  file.name.tmp<-paste(opt$corr, "_lt/", as.vector(acc.names[x]), sep="")
-                  table.tmp<-cbind.data.frame("lt"=annot[,2], "corr"=as.numeric(a[paquets[x]:(paquets[(x+1)]-1)]))
+                  file.name.tmp<-paste(as.vector(acc.names[x]), sep="")
+                  table.tmp<-cbind.data.frame("lt"=annot, "corr"=as.numeric(a[paquets[x]:(paquets[(x+1)]-1)]))
                   write.table(table.tmp, file.name.tmp)})
         }, mc.cores=opt$mcores)
 ~                                   
