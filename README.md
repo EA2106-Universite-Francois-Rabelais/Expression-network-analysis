@@ -34,6 +34,7 @@ Example:
 
 ## What it does?
 The bash script contains command to 
+
 	1. compute all pairwise HRR in a parallelized manner
 	2. extract gene names for further renaming in R
 	3. extract the best pairs
