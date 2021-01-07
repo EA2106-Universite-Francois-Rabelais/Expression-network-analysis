@@ -5,79 +5,61 @@ The input table (eg, file.dat) should have the format n x p, with n correspondin
         Be sure that your file.dat is a tab-delimited file. 
         You may run the following Perl one-liner to replace spaces by tabulations:
         perl -pe 's/ /\t/g' file.dat >file.dat.ok
+	
+	Alternatively, if the expression matrix is generated in R, please use the following command:
 
+```
+#Replace with the correct object and output names
+write.table(expressionmatrix, "expressionmatrix.dat", sep="\t", quote=F)
+```
 
-The resulting vectors are next cut into n files by a simple multithreaded R script.
+## Installation
 
-##Installation
+Untar 'hrr.tgz' and compile with mpich by typing 'make' in the directory. Requires cBLAS and Lapack libraries, as well as mpicc (in mpich or openmpi).
 
-Untar 'hrr.tgz' and compile with mpich by typing 'make' in the directory. Requires cBLAS and Lapack libraries.
+## Usage
 
-##Usage
+HRR calculation pipeline
 
-Command line example :
+Usage: ./hrr_pipeline.sh 
+ expression table (tab delimited)
+ number of cpus 
+ hrr executable
 
-- rankmatrix, all results saved on node 0, doubleprecision
+Example:
+./hrr_pipeline.sh matrix 8 /usr/bin/hrr
 
-        mpirun -np 4 hrr file.dat rankmatrix doubleprecision
+## What it does?
+The bash script contains command to 
+	1. compute all pairwise HRR in a parallelized manner
+	2. extract gene names for further renaming in R
+	3. extract the best pairs
 
-- rankmatrix, all results saved on node 0
+The best pairs can then be loaded in R to construct the network, as described below:
 
-        mpirun -np 4 hrr file.dat rankmatrix
+```
+library(data.table)
+library(igraph)
+#for a network containing the 1e+06 best pairs
+threshold=1e+06
 
-- rankmatrix, all results saved on each node
+list.pairs<-list.files(pattern="selected", full.names = T)
+pairs.table<-rbindlist(lapply(list.pairs, fread))
+pairs.table<-pairs.table[order(pairs.table[,V3]),]
+colnames(pairs.table)<-c("from", "to", "hrr")
+rn<-scan("rn.tmp", what="character")
 
-        mpirun -np 4 hrr file.dat rankmatrix localsave
+print("Get best pairs")
+pairs.table.best<-pairs.table[1:threshold,]
+rn.combi<-pairs.table.best
+rn.combi$from<-rn[rn.combi$from]
+rn.combi$to<-rn[rn.combi$to]
+rm(pairs.table)
+g<-simplify(graph_from_data_frame(rn.combi, directed=F))
+#This is the network
 
-- pcc, all results saved on node 0
-
-        mpirun -np 4 hrr file.dat pcc
-
-- pcc, all results saved on each node
-
-        mpirun -np 4 hrr file.dat pcc localsave
-
-
-
-##Values
-The program returns np text files (named 0.txt to (np-1).txt) corresponding to concatenated vectors of PCC or HRR values.
-
-##Process .txt files resulting from hrr
-First, create a PCC_lt or HRR_lt directory and use the R script HRR_cut.R as following in the directory containing .txt files (it should contain only those .txt files).
-
-
-        Rscript --vanilla HRR_cut.R
-
-        Usage: HRR_cut.R [options]
-        
-        
-          Options:
-          	-n INTEGER, --files=INTEGER
-          		Number of .txt files (equal to number of cpus used in hrr)
-          
-          	-a CHARACTER, --accession=CHARACTER
-          		File containing transcript names
-          
-          	-s INTEGER, --size=INTEGER
-          		Number of rows in the processed matrix (not REAL size), see hrr standard output
-          
-          	-S INTEGER, --realsize=INTEGER
-          		Number of rows in the matrix (REAL size), see hrr standard output
-          
-          	-c INTEGER, --subsize=INTEGER
-          		Number of row in the submatrix, see hrr standard output
-          
-          	-r CHARACTER, --corr=CHARACTER
-          		PCC or HRR
-          
-          	-m INTEGER, --mcores=INTEGER
-          		Number of CPUs to use; relies on 'Parallel' R package
-          
-          	-h, --help
-          		Show this help message and exit
-          
-  
-  
-##Example
+``` 
+ 
+## Example
 
 You may download a full Arabidopsis expression matrix @http://bbv-ea2106.sciences.univ-tours.fr/index.php/web-links/36-transcriptomic-resources and use the pipeline to generate HRR or PCC files.
