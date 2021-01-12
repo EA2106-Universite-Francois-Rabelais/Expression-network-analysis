@@ -63,6 +63,33 @@ g<-simplify(graph_from_data_frame(rn.combi, directed=F))
 #This is the network
 
 ``` 
+## Network processing in igraph
+
+Here are some tips to process the graph.
+
+```
+#Vertex list
+V(g)$name
+#Vertex degree
+hist(degree(g))
+#Community detection
+com.g<-cluster_fast_greedy(g)
+#gene membership
+membership(com.g)
+#Pathway level co-expression
+#Given a vector of candidate genes
+candidates<-c("gene1", "gene2", "gene3")
+#Capture neighbors at 1 edge distance
+candidates.neighbors<-ego(g, 1, candidates)
+neighbors<-unlist(lapply(candidates.neighbors, names))
+#make PLC
+plc<-induced_subgraph(g, neighbors)
+#plot
+plot(plc, vertex.size=4, vertex.label="", vertex.color="#E69F00")
+#Vertex list
+V(plc)$name
+```
+
  
 ## Example
 
